@@ -51,8 +51,8 @@ int main() {
 		printf("%d번째 상자의 이름을 30바이트 이내로 입력해 주세요: ", i + 1);
 		scanf_s("%s", Boxes[i].ballName, sizeof(char) * 31);
 
-		while (Boxes[i].choosePer <= 0) {
-			printf("해당 상자가 나올 확률 비를 양수로 입력하세요: ");
+		while (Boxes[i].choosePer < 0) {
+			printf("해당 상자가 나올 확률 비를 입력하세요: ");
 			scanf_s("%d", &Boxes[i].choosePer);
 			boxChPer += Boxes[i].choosePer;
 			Boxes[i].accPer = boxChPer;
@@ -116,38 +116,40 @@ int main() {
 			printf("-");
 		}
 
-		for (int i = 0; i < 30; i++) {
+		for (int l = 0; l < 30; l++) {
 			printf(" ");
 		}
 		printf("- P(C = red | B = %s)    = %10.2lf%%\n", Boxes[i].ballName, Boxes[i].perR * 100);
 		
 
-		for (int i = 0; i < 30; i++) {
+		for (int l = 0; l < 30; l++) {
 			printf(" ");
 		}
 		printf("- P(C = orange | B = %s) = %10.2lf%%\n", Boxes[i].ballName, Boxes[i].perO * 100);
 		
 
-		for (int i = 0; i < 30; i++) {
+		for (int l = 0; l < 30; l++) {
 			printf(" ");
 		}
-		tempPer = Boxes[i].perR * red / Boxes[i].chooseRate;
+		tempPer = Boxes[i].perR * Boxes[i].chooseRate / red;
+		tempPer = Boxes[i].chooseRate == 0 ? 0 : tempPer;
 		printf("- P(B = %s | C = red)    = %10.2lf%%\n", Boxes[i].ballName, tempPer * 100);
 		
 
-		for (int i = 0; i < 30; i++) {
+		for (int l = 0; l < 30; l++) {
 			printf(" ");
 		}
-		tempPer = Boxes[i].perO * orange / Boxes[i].chooseRate;
+		tempPer = Boxes[i].perO * Boxes[i].chooseRate / orange;
+		tempPer = Boxes[i].chooseRate == 0 ? 0 : tempPer;
 		printf("- P(B = %s | C = orange) = %10.2lf%%\n", Boxes[i].ballName, tempPer * 100);
 
-		for (int i = 0; i < 120; i++) {
+		for (int l = 0; l < 120; l++) {
 			printf("=");
 		}
 		printf("\n");
 	}
 
-	printf("예상 결과: red %10.2f%% / orange %10.2f%%\n", orange * 100, red * 100);
+	printf("예상 결과: red %10.2f%% / orange %10.2f%%\n", red * 100, orange * 100);
 
 	while (roll <= 0) {
 		printf("예측 횟수를 입력해 주세요: ");
@@ -208,13 +210,17 @@ int main() {
 		printf("\n");
 
 		printf("%s 상자의 선택 횟수: %d / 확률: %.2f%%\n", Boxes[i].ballName, Boxes[i].chooseNum, (double)Boxes[i].chooseNum / roll * 100);
-		printf("- P(C = red | B = %s) = %.2f%%, %d / %d\n", Boxes[i].ballName, (double)Boxes[i].finalR / Boxes[i].chooseNum * 100,
+		printf("- P(C = red | B = %s) = %.2f%%, %d / %d\n", Boxes[i].ballName, 
+			Boxes[i].chooseNum == 0 ? 0: (double)Boxes[i].finalR / Boxes[i].chooseNum * 100,
 			Boxes[i].finalR, Boxes[i].chooseNum);
-		printf("- P(C = orange | B = %s) = %.2f%%, %d / %d\n", Boxes[i].ballName, (double)Boxes[i].finalO / Boxes[i].chooseNum * 100,
+		printf("- P(C = orange | B = %s) = %.2f%%, %d / %d\n", Boxes[i].ballName, 
+			Boxes[i].chooseNum == 0 ? 0 : (double)Boxes[i].finalO / Boxes[i].chooseNum * 100,
 			Boxes[i].finalO, Boxes[i].chooseNum);
-		printf("- P(B = %s | C = red) = %.2f%%, %d / %d\n", Boxes[i].ballName, (double)Boxes[i].finalR / redPick * 100,
+		printf("- P(B = %s | C = red) = %.2f%%, %d / %d\n", Boxes[i].ballName, 
+			Boxes[i].finalR == 0 ? 0 : (double)Boxes[i].finalR / redPick * 100,
 			Boxes[i].finalR, redPick);
-		printf("- P(B = %s | C = orange) = %.2f%%, %d / %d\n", Boxes[i].ballName, (double)Boxes[i].finalO / orangePick * 100,
+		printf("- P(B = %s | C = orange) = %.2f%%, %d / %d\n", Boxes[i].ballName, 
+			Boxes[i].finalO == 0 ? 0 : (double)Boxes[i].finalO / orangePick * 100,
 			Boxes[i].finalO, orangePick);
 	}
 
